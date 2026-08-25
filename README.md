@@ -49,13 +49,18 @@ assets may move or disappear over time.
 
 Requirements:
 
-- JDK 17
-- Gradle 9.5.0
-- Android SDK 37
+- JDK 21 to run the current AGP 9.3 / Android Lint toolchain reliably;
+- Java source/target compatibility remains Java 17;
+- Gradle 9.5.0;
+- Android SDK 37.
 
 ```bash
 gradle --no-daemon testDebugUnitTest lintDebug assembleDebug
 ```
+
+The CI deliberately runs Gradle on JDK 21 while compiling the project itself with Java 17 compatibility.
+This avoids an AGP 9.3 Android Lint runtime incompatibility that can occur on JDK 17 without raising the
+app's Java language requirement.
 
 To add the standard Gradle Wrapper locally:
 

@@ -51,6 +51,10 @@ android {
     }
 
     compileOptions {
+        // The pinned connectivity Gist uses Java library APIs that arrived on the
+        // Android platform after API 23 (for example AtomicInteger.updateAndGet).
+        // Core library desugaring backports supported java.* APIs for older devices.
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
@@ -62,5 +66,6 @@ tasks.named('preBuild').configure {
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.8.0'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
     testImplementation 'junit:junit:4.13.2'
 }

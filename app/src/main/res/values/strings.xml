@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Image download with progress</string>
+    <string name="instructions">Download an image on a background thread, show byte progress, support cancellation and display the downloaded file.</string>
+    <string name="url_hint">Image URL (HTTP or HTTPS)</string>
+    <string name="default_image_url">https://tesdai.com/images/tesdai/fachada.jpg</string>
+    <string name="download">Download</string>
+    <string name="cancel">Cancel</string>
+    <string name="ready">Ready.</string>
+    <string name="downloading">Downloading…</string>
+    <string name="download_cancelled">Download cancelled.</string>
+    <string name="invalid_url">Enter an absolute HTTP(S) URL.</string>
+    <string name="progress_format">%1$d%% — %2$d / %3$d bytes</string>
+    <string name="progress_unknown_size">%1$d bytes downloaded (server did not provide a total size)</string>
+    <string name="download_success">Download complete: %1$s</string>
+    <string name="image_decode_failed">The file was downloaded but Android could not decode it as an image: %1$s</string>
+    <string name="http_error">The server responded, but the download failed (HTTP %1$d).</string>
+    <string name="download_failed_diagnosing">The request failed before receiving an HTTP response. Running an Internet diagnostic…</string>
+    <string name="download_failed_detail">Download failed: %1$s</string>
+    <string name="downloaded_image_description">Downloaded image</string>
+    <string name="network_checking">Checking current network state…</string>
+    <string name="network_offline">No usable Internet-capable network is currently exposed by Android. Tap for an active diagnostic.</string>
+    <string name="network_available">Network available; Android has not reported it as validated. Tap for an active diagnostic.</string>
+    <string name="network_validated">Network available and Internet validated by Android. Tap for an active diagnostic.</string>
+    <string name="network_captive_portal">Android detected a captive portal. Tap for an active diagnostic.</string>
+    <string name="network_diagnosing">Running active Internet diagnostic…</string>
+    <string name="network_reachable_via">Generic Internet reachability confirmed via %1$s.</string>
+    <string name="network_unreachable">Generic Internet diagnostic could not confirm reachability.</string>
+</resources>

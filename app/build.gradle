@@ -1,0 +1,66 @@
+import java.net.URI
+
+plugins {
+    id 'com.android.application'
+}
+
+// Pinned snapshot of Rodrigo Sambade's ConnectivityAndInternetAccess Gist.
+// The source is generated into build/ so the repository does not silently drift when the Gist changes.
+def connectivityGistRevision = 'ce7bd07ed17d10d48785a0c21527c8100ea6da7e'
+def connectivityGistUrl = "https://gist.githubusercontent.com/rodrigosambadesaa/729cca29a031fef4e2f15751863b655f/raw/${connectivityGistRevision}/ConnectivityAndInternetAccess.java"
+def connectivityOutputDir = layout.buildDirectory.dir('generated/connectivity')
+def connectivityOutputFile = connectivityOutputDir.map {
+    it.file('net/i2p/android/router/util/ConnectivityAndInternetAccess.java')
+}
+
+tasks.register('syncConnectivityGist') {
+    description = 'Downloads the pinned ConnectivityAndInternetAccess.java Gist snapshot.'
+    outputs.file(connectivityOutputFile)
+
+    doLast {
+        File outputFile = connectivityOutputFile.get().asFile
+        outputFile.parentFile.mkdirs()
+        URI.create(connectivityGistUrl).toURL().withInputStream { input ->
+            outputFile.withOutputStream { output ->
+                output << input
+            }
+        }
+    }
+}
+
+android {
+    namespace 'com.example.rodri.ejercicio3asynctask'
+    compileSdk 37
+
+    defaultConfig {
+        applicationId 'com.example.rodri.ejercicio3asynctask'
+        minSdk 23
+        targetSdk 37
+        versionCode 1
+        versionName '1.0.0'
+
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    sourceSets {
+        main.java.srcDir(connectivityOutputDir)
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+tasks.named('preBuild').configure {
+    dependsOn(tasks.named('syncConnectivityGist'))
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.8.0'
+    testImplementation 'junit:junit:4.13.2'
+}

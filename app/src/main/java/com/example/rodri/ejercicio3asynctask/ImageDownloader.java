@@ -92,7 +92,7 @@ public final class ImageDownloader {
                         responseCode);
             }
 
-            long totalBytes = connection.getContentLengthLong();
+            long totalBytes = connection.getContentLength();
             long downloadedBytes = 0L;
 
             try (InputStream input = new BufferedInputStream(connection.getInputStream());
@@ -160,7 +160,7 @@ public final class ImageDownloader {
     }
 
     public static void validateHttpUrl(String address) {
-        if (address == null || address.isBlank()) {
+        if (address == null || address.trim().isEmpty()) {
             throw new IllegalArgumentException("URL is empty");
         }
         URI uri = URI.create(address.trim());

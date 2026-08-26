@@ -14,6 +14,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Verify vendored ConnectivityAndInternetAccess Gist
+        shell: bash
+        env:
+          GIST_URL: https://gist.githubusercontent.com/rodrigosambadesaa/729cca29a031fef4e2f15751863b655f/raw/ce7bd07ed17d10d48785a0c21527c8100ea6da7e/ConnectivityAndInternetAccess.java
+          VENDORED_FILE: app/src/main/java/net/i2p/android/router/util/ConnectivityAndInternetAccess.java
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --retry-delay 2 "$GIST_URL" -o /tmp/ConnectivityAndInternetAccess.java
+          test "$(wc -l < /tmp/ConnectivityAndInternetAccess.java)" -ge 1700
+          cmp --silent /tmp/ConnectivityAndInternetAccess.java "$VENDORED_FILE" || {
+            echo 'Vendored ConnectivityAndInternetAccess.java differs from the pinned Gist revision.' >&2
+            diff -u /tmp/ConnectivityAndInternetAccess.java "$VENDORED_FILE" | head -200 || true
+            exit 1
+          }
+          echo "Exact pinned Gist match: $(sha256sum "$VENDORED_FILE" | cut -d' ' -f1)"
+
       # The project source/target compatibility remains Java 17. Gradle/Lint runs on
       # JDK 21 because AGP 9.3's bundled lint parser can call JDK 21 List APIs.
       - name: Set up JDK 21

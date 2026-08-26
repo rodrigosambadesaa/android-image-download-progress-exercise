@@ -27,21 +27,43 @@ This exercise genuinely requires network access, so it incorporates Rodrigo Samb
 
 `https://gist.github.com/rodrigosambadesaa/729cca29a031fef4e2f15751863b655f`
 
-The integration is now **vendored and visible in the repository** at:
+The complete Java source is **vendored verbatim** in the repository at:
 
 `app/src/main/java/net/i2p/android/router/util/ConnectivityAndInternetAccess.java`
 
-The source corresponds to the Java implementation/API used by the pinned Gist revision:
+It is the exact contents of Gist revision:
 
 `ce7bd07ed17d10d48785a0c21527c8100ea6da7e`
 
-The project no longer downloads Java source during Gradle builds. Keeping the helper in the normal
-source tree makes a checkout self-contained, makes the exact connectivity implementation reviewable in
-GitHub, and prevents a missing/generated source from hiding the dependency.
+This is the full expanded source (about 1,735 source lines), not the previously used compact/reformatted
+copy. Git identifies the vendored file with blob SHA:
 
-`MainActivity` follows the Gist's recommended pattern: observe the default network passively, perform the
-real image request, and run the active DNS/HTTPS diagnostic only after a network-like request failure or
-when the user explicitly asks for a diagnosis.
+`10b6c8a7ed700f01b3a9d34cf8690bf0516f116a`
+
+The Android CI downloads that pinned raw Gist revision and performs a byte-for-byte `cmp` against the
+vendored Java file before compiling. A future accidental edit, truncation, reformatting or stale copy of
+the connectivity helper therefore fails CI instead of silently changing the implementation.
+
+The project does **not** download Java source as part of the Gradle build. A checkout remains
+self-contained and the exact connectivity implementation is visible and reviewable in the normal source
+tree.
+
+### Integration used by the app
+
+`MainActivity` uses the full helper through its public API:
+
+- `ConnectivityAndInternetAccess.Builder().build()` for the reusable diagnostic instance;
+- `ConnectivityAndInternetAccess.observeNetwork(...)` / `NetworkObserver` for passive lifecycle-aware
+  default-network state;
+- `NetworkState.isConnected()`, `isInternetValidated()` and `isCaptivePortalDetected()` to render the
+  current network state without generating probe traffic;
+- `checkInternetAsync(...)` only as an active diagnostic after a network-like download failure or when
+  the user explicitly requests a diagnosis;
+- `Request.cancel()` during replacement/teardown so an obsolete diagnostic does not update the UI.
+
+The real image request remains the primary source of truth. A generic connectivity probe is deliberately
+**not** used as a mandatory gate before every download: connectivity can change between a preflight and
+the actual request, and the requested image host can fail even while generic Internet access works.
 
 The required permissions are declared in the manifest:
 

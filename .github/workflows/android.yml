@@ -38,11 +38,19 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Set up Gradle 9.5.0
+      - name: Set up Gradle cache
         uses: gradle/actions/setup-gradle@v6
         with:
-          gradle-version: '9.5.0'
           cache-provider: basic
 
+      - name: Verify committed Gradle wrapper
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -x ./gradlew
+          grep -q 'gradle-9.5.0-bin.zip' gradle/wrapper/gradle-wrapper.properties
+          ./gradlew --no-daemon --version | tee /tmp/gradle-version.txt
+          grep -q 'Gradle 9.5.0' /tmp/gradle-version.txt
+
       - name: Validate, test and build
-        run: gradle --no-daemon testDebugUnitTest lintDebug assembleDebug
+        run: ./gradlew --no-daemon testDebugUnitTest lintDebug assembleDebug

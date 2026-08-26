@@ -22,19 +22,33 @@ image in an `ImageView`. This repository completes that exercise and updates it 
 
 ## ConnectivityAndInternetAccess Gist
 
-This exercise genuinely requires network access, so it uses Rodrigo Sambade's modernized
-`ConnectivityAndInternetAccess.java` implementation:
+This exercise genuinely requires network access, so it incorporates Rodrigo Sambade's modernized
+`ConnectivityAndInternetAccess.java` implementation from:
 
 `https://gist.github.com/rodrigosambadesaa/729cca29a031fef4e2f15751863b655f`
 
-The build pins revision:
+The integration is now **vendored and visible in the repository** at:
+
+`app/src/main/java/net/i2p/android/router/util/ConnectivityAndInternetAccess.java`
+
+The source corresponds to the Java implementation/API used by the pinned Gist revision:
 
 `ce7bd07ed17d10d48785a0c21527c8100ea6da7e`
 
-`app/build.gradle` downloads exactly that Java snapshot into `build/generated/connectivity` before the
-Android build. Pinning the revision means future edits to the Gist cannot silently change an old build.
-The app follows the Gist's recommended pattern: passive network state -> real backend/file request ->
-active generic reachability diagnostic only when useful.
+The project no longer downloads Java source during Gradle builds. Keeping the helper in the normal
+source tree makes a checkout self-contained, makes the exact connectivity implementation reviewable in
+GitHub, and prevents a missing/generated source from hiding the dependency.
+
+`MainActivity` follows the Gist's recommended pattern: observe the default network passively, perform the
+real image request, and run the active DNS/HTTPS diagnostic only after a network-like request failure or
+when the user explicitly asks for a diagnosis.
+
+The required permissions are declared in the manifest:
+
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+```
 
 ## Original URL
 

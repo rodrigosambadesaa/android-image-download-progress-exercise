@@ -7,6 +7,10 @@ on:
 permissions:
   contents: read
 
+# CVE-2026-114938: mitigate affected Base64 intrinsic in JDK 21 Android builds.
+env:
+  JAVA_TOOL_OPTIONS: -XX:-UseBASE64Intrinsics
+
 jobs:
   build:
     runs-on: ubuntu-latest
